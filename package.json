@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build": "npm run services:up && next build",
     "start": "npm run services:up && npm run test:watch",
     "dev": "next dev",
     "lint:check": "prettier --check .",
