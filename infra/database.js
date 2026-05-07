@@ -11,7 +11,6 @@ async function query(queryObject) {
   
   await client.connect();
   const result = await client.query(queryObject);
-  console.log("DEBUG DATABASE result:", result);
   await client.end();
   return result;
 }
