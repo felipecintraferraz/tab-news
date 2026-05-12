@@ -4,6 +4,10 @@ let dbName;
 
 
 async function status(req, res) {
+
+  if (req.method !== "GET") {
+    return res.status(405).json({ message: "Method Not Allowed" })
+  }
   dbName = process.env.POSTGRES_DB
   const usedConnectionsQuery =
     "SELECT count(*)::int as used_connections FROM pg_stat_activity WHERE datname = $1;"
