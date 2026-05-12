@@ -15,6 +15,7 @@ export default async function migrations(req, res) {
   let migrations
   if (req.method === "GET") {
     migrations = await migrationRunner(defaultOptions)
+    await databaseClient.end();
   }
   else if (req.method === "POST") {
     migrations = await migrationRunner({
@@ -22,6 +23,7 @@ export default async function migrations(req, res) {
       dryRun: false,
       verbose: false
     })
+    await databaseClient.end();
     if (migrations.length > 0) {
       return res.status(201).json(migrations);
     }
