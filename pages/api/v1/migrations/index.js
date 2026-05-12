@@ -3,9 +3,8 @@ import { join } from "node:path"
 import database from "infra/database.js"
 
 export default async function migrations(req, res) {
-  const databaseClient = await database.getNewClient();
+  let databaseClient
   const defaultOptions = {
-    dbClient: databaseClient,
     dryRun: true,
     dir: join("infra", "migrations"),
     direction: "up",
@@ -14,12 +13,19 @@ export default async function migrations(req, res) {
   }
   let migrations
   if (req.method === "GET") {
-    migrations = await migrationRunner(defaultOptions)
-    await databaseClient.end();
-  }
-  else if (req.method === "POST") {
+    databaseClient = await database.getNewClient()
     migrations = await migrationRunner({
       ...defaultOptions,
+      dbClient: databaseClient
+    })
+    await databaseClient.end();
+    return res.status(200).json(migrations);
+  }
+  else if (req.method === "POST") {
+    databaseClient = await database.getNewClient();
+    migrations = await migrationRunner({
+      ...defaultOptions,
+      dbClient: databaseClient,
       dryRun: false,
       verbose: false
     })
@@ -27,8 +33,10 @@ export default async function migrations(req, res) {
     if (migrations.length > 0) {
       return res.status(201).json(migrations);
     }
+    else {
+      return res.status(200).json({ message: "No migrations to apply" })
+    }
   } else {
     return res.status(405).json({ message: "Method Not Allowed" })
   }
-  return res.status(200).json(migrations);
 }

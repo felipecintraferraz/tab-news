@@ -21,7 +21,8 @@ test("POST to /migrations should return status code 201 and a non empty array", 
   expect(respBody.length).toBeGreaterThan(0)
 });
 
-test("Second POST to /migrations should return an empty array", async () => {
-  expect(Array.isArray(respBody)).toBe(true)
-  expect(respBody.length).toBe(0)
+test("Second POST to /migrations should return status code 200 and message: 'No migrations to apply'", async () => {
+  expect(response.status).toBe(200)
+  expect(respBody.message).toBe("No migrations to apply")
+  // expect(respBody.length).toBe(0)
 });
