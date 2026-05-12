@@ -1,14 +1,17 @@
 import migrationRunner from 'node-pg-migrate'
 import { join } from "node:path"
-const defaultOptions = {
-  databaseUrl: process.env.DATABASE_URL,
-  dryRun: true,
-  dir: join("infra", "migrations"),
-  direction: "up",
-  verbose: true,
-  migrationsTable: "pgmigrations"
-}
+import database from "infra/database.js"
+
 export default async function migrations(req, res) {
+  const databaseClient = await database.getNewClient();
+  const defaultOptions = {
+    dbClient: databaseClient,
+    dryRun: true,
+    dir: join("infra", "migrations"),
+    direction: "up",
+    verbose: true,
+    migrationsTable: "pgmigrations"
+  }
   let migrations
   if (req.method === "GET") {
     migrations = await migrationRunner(defaultOptions)
