@@ -1,9 +1,7 @@
 import { Client } from "pg";
 
-
-
 async function query(queryObject) {
-  let client
+  let client;
 
   try {
     client = await getNewClient();
@@ -18,10 +16,10 @@ async function query(queryObject) {
 }
 
 async function cleanDatabase() {
-  await query("DROP schema public cascade; create schema public;")
+  await query("DROP schema public cascade; create schema public;");
 }
 
-async function getNewClient(){
+async function getNewClient() {
   var useSSL = process.env.NODE_ENV === "production" ? true : false;
   const client = new Client({
     host: process.env.POSTGRES_HOST,
@@ -29,7 +27,7 @@ async function getNewClient(){
     user: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DB,
-    ssl: useSSL
+    ssl: useSSL,
   });
   await client.connect();
   return client;
@@ -39,4 +37,4 @@ export default {
   query,
   cleanDatabase,
   getNewClient,
-}
+};
