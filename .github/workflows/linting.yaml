@@ -12,3 +12,14 @@ jobs:
           node-version: "lts/hydrogen"
       - run: npm ci
       - run: npm run lint:prettier:check
+  Eslint:
+    name: Linting with ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "lts/hydrogen"
+      - run: npm ci
+      - run: npm run lint:eslint:check
