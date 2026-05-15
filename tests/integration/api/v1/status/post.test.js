@@ -1,8 +1,12 @@
-import database from "infra/database.js"
+import orchestrator from "tests/orchestrator.js"
 
 const url = "http://localhost:3000/api/v1/status"
 let response
 let respBody
+
+beforeAll(async () => {
+  await orchestrator.waitForAllServices()
+})
 
 beforeEach(async () => {
   response = await fetch(url, {
