@@ -1,11 +1,11 @@
-import orchestrator from "tests/orchestrator.js";
+import waitForAllServices from "tests/orchestrator.js";
 
 const url = "http://localhost:3000/api/v1/status";
 let response;
 let respBody;
 
 beforeAll(async () => {
-  await orchestrator.waitForAllServices();
+  await waitForAllServices();
 });
 
 beforeEach(async () => {
@@ -37,9 +37,3 @@ test("GET to /status should return used_connections", async () => {
   expect(respBody.dependencies.database.opened_connections).toBeDefined();
   expect(respBody.dependencies.database.opened_connections).toEqual(1);
 });
-
-// test("Expect that status message to be 'Todos os serviços estão online'", async () => {
-// const resp = await fetch(url)
-// const respBody = await resp.json();
-// expect(respBody.message).toBe("Todos os serviços estão online");
-// });
