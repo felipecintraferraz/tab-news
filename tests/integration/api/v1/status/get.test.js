@@ -1,6 +1,7 @@
 import orchestrator from "tests/orchestrator.js";
 
-const url = "http://localhost:3000/api/v1/status";
+const route = "/api/v1/status";
+const url = `${process.env.BASE_URL}${route}`;
 let response;
 let respBody;
 
@@ -18,6 +19,9 @@ describe("API v1", () => {
     describe("Anonymous user", () => {
       test("Hit the endpoint", async () => {
         expect(response.status).toBe(200);
+        expect(response.headers.get("content-type")).toMatch(
+          /application\/json/,
+        );
       });
 
       test("Validate the update_at timestamp format", async () => {

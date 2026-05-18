@@ -1,6 +1,7 @@
 import orchestrator from "tests/orchestrator.js";
 
-const url = "http://localhost:3000/api/v1/status";
+const route = "/api/v1/status";
+const url = `${process.env.BASE_URL}${route}`;
 let response;
 let respBody;
 
