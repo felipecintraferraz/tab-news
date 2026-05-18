@@ -19,6 +19,9 @@ describe("API v1", () => {
     describe("Anonymous user", () => {
       test("Hit the endpoint", async () => {
         expect(response.status).toBe(200);
+        expect(response.headers.get("content-type")).toMatch(
+          /application\/json/,
+        );
       });
 
       test("Validate the update_at timestamp format", async () => {
