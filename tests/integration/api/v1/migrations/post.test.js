@@ -1,13 +1,12 @@
-import database from "infra/database.js";
-import waitForAllServices from "tests/orchestrator.js";
+import orchestrator from "tests/orchestrator.js";
 
 const url = "http://localhost:3000/api/v1/migrations";
 let response;
 let respBody;
 
 beforeAll(async () => {
-  await waitForAllServices();
-  await database.cleanDatabase();
+  await orchestrator.waitForAllServices();
+  await orchestrator.cleanDatabase();
 });
 
 beforeEach(async () => {
@@ -16,15 +15,20 @@ beforeEach(async () => {
   });
   respBody = await response.json();
 });
+describe("API v1", () => {
+  describe("POST /migrations", () => {
+    describe("Anonymous user", () => {
+      test("Run migrations when pending migrations exists", async () => {
+        expect(response.status).toBe(201);
+        expect(Array.isArray(respBody)).toBe(true);
+        expect(respBody.length).toBeGreaterThan(0);
+      });
 
-test("POST to /migrations should return status code 201 and a non empty array", async () => {
-  expect(response.status).toBe(201);
-  expect(Array.isArray(respBody)).toBe(true);
-  expect(respBody.length).toBeGreaterThan(0);
-});
-
-test("Second POST to /migrations should return status code 200 and message: 'No migrations to apply'", async () => {
-  expect(response.status).toBe(200);
-  expect(respBody.message).toBe("No migrations to apply");
-  // expect(respBody.length).toBe(0)
+      test("Run migrations when no pending migrations exist", async () => {
+        expect(response.status).toBe(200);
+        expect(respBody.message).toBe("No migrations to apply");
+        // expect(respBody.length).toBe(0)
+      });
+    });
+  });
 });

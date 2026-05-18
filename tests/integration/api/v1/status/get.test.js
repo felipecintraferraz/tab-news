@@ -1,11 +1,11 @@
-import waitForAllServices from "tests/orchestrator.js";
+import orchestrator from "tests/orchestrator.js";
 
 const url = "http://localhost:3000/api/v1/status";
 let response;
 let respBody;
 
 beforeAll(async () => {
-  await waitForAllServices();
+  await orchestrator.waitForAllServices();
 });
 
 beforeEach(async () => {
@@ -13,27 +13,36 @@ beforeEach(async () => {
   respBody = await response.json();
 });
 
-test("GET to /status should return status code 200", async () => {
-  expect(response.status).toBe(200);
-});
+describe("API v1", () => {
+  describe("GET /status", () => {
+    describe("Anonymous user", () => {
+      test("Hit the endpoint", async () => {
+        expect(response.status).toBe(200);
+      });
 
-test("GET to /status should return updated_at as ISO8601 format", async () => {
-  expect(respBody.updated_at).toMatch(
-    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/,
-  );
-});
+      test("Validate the update_at timestamp format", async () => {
+        const ISO8601_UTC_REGEX =
+          /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+        expect(respBody.updated_at).toMatch(ISO8601_UTC_REGEX);
+      });
 
-test("GET to /status should return database version", async () => {
-  expect(respBody.dependencies.database.version).toBeDefined();
-  expect(respBody.dependencies.database.version).toEqual("16.0");
-});
+      test("Validate the database version", async () => {
+        expect(respBody.dependencies.database.version).toBeDefined();
+        expect(respBody.dependencies.database.version).toEqual("16.0");
+      });
 
-test("GET to /status should return max_connections", async () => {
-  expect(respBody.dependencies.database.max_connections).toBeDefined();
-  expect(respBody.dependencies.database.max_connections).toMatch(/^\d+$/);
-});
+      test("Validate the max_connections defined", async () => {
+        expect(respBody.dependencies.database.max_connections).toBeDefined();
+        const MUST_BE_NUMBER_REGEX = /^\d+$/;
+        expect(respBody.dependencies.database.max_connections).toMatch(
+          MUST_BE_NUMBER_REGEX,
+        );
+      });
 
-test("GET to /status should return used_connections", async () => {
-  expect(respBody.dependencies.database.opened_connections).toBeDefined();
-  expect(respBody.dependencies.database.opened_connections).toEqual(1);
+      test("Validate all but 1 connections are closed", async () => {
+        expect(respBody.dependencies.database.opened_connections).toBeDefined();
+        expect(respBody.dependencies.database.opened_connections).toEqual(1);
+      });
+    });
+  });
 });
