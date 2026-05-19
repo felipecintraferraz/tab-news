@@ -1,1 +1,7 @@
-npm run lint:prettier:fix
+if ! npm run lint:prettier:check; then
+  npm run lint:prettier:fix
+  git restore --staged .
+  echo "# This attempt to commit had invalid format. Try again!"
+  echo " --- All staged changes was removed from stage and formated ---"
+  exit 1
+fi
