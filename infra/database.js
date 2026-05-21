@@ -11,7 +11,7 @@ async function query(queryObject) {
     console.error("Error querying database:", error);
     throw error;
   } finally {
-    await client.end();
+    await client?.end();
   }
 }
 
