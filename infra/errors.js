@@ -26,3 +26,13 @@ export class InternalServerError extends BaseError {
     });
   }
 }
+
+export class MethodNotAllowedError extends BaseError {
+  constructor() {
+    super("Method not allowed.", {
+      name: "MethodNotAllowedError",
+      statusCode: 405,
+      action: "Use an allowed method.",
+    });
+  }
+}
