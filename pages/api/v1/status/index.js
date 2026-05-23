@@ -1,11 +1,32 @@
+import { createRouter } from "next-connect";
 import database from "infra/database.js";
+import { InternalServerError, MethodNotAllowedError } from "infra/errors";
 
 let dbName;
 
-async function status(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method Not Allowed" });
-  }
+const router = createRouter();
+router.get(getHandler);
+export default router.handler({
+  onNoMatch: onNoMatchHandler,
+  onError: onErrorHandler,
+});
+
+function onErrorHandler(error, req, res) {
+  const publicError = new InternalServerError({
+    cause: error,
+  });
+  console.error(publicError);
+  res.status(publicError.statusCode).json(publicError);
+}
+
+function onNoMatchHandler(req, res) {
+  const publicError = new MethodNotAllowedError();
+  res.status(publicError.statusCode).json({
+    message: publicError.message,
+  });
+}
+
+async function getHandler(req, res) {
   dbName = process.env.POSTGRES_DB;
   const usedConnectionsQuery =
     "SELECT count(*)::int as used_connections FROM pg_stat_activity WHERE datname = $1;";
@@ -27,5 +48,3 @@ async function status(req, res) {
     },
   });
 }
-
-export default status;

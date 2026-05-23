@@ -21,7 +21,7 @@ describe("API v1", () => {
     describe("Anonymous user", () => {
       test("Is not allowed", async () => {
         expect(response.status).toBe(405);
-        expect(respBody.message).toBe("Method Not Allowed");
+        expect(respBody.message).toBe("Method not allowed.");
       });
     });
   });
