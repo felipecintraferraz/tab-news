@@ -1,17 +1,18 @@
 class BaseError extends Error {
-  constructor(message, { cause, action, statusCode }) {
+  constructor(message, { cause, action, statusCode, name }) {
     super(message, {
       cause,
     });
     this.statusCode = statusCode;
     this.action = action;
+    this.name = name;
   }
   toJSON() {
     return {
+      statusCode: this.statusCode,
       name: this.name,
       message: this.message,
       action: this.action,
-      statusCode: this.statusCode,
     };
   }
 }

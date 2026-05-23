@@ -21,7 +21,7 @@ describe("API v1", () => {
   describe("DELETE /status", () => {
     describe("Anonymous user", () => {
       test("Is not allowed", async () => {
-        expect(respBody).toBeDefined();
+        expect(response.status).toBe(405);
         checkNotAllowedResponse(respBody);
       });
     });

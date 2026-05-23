@@ -14,15 +14,12 @@ function onErrorHandler(error, req, res) {
   const publicError = new InternalServerError({
     cause: error,
   });
-  console.error(publicError);
   res.status(publicError.statusCode).json(publicError);
 }
 
 function onNoMatchHandler(req, res) {
   const publicError = new MethodNotAllowedError();
-  res.status(publicError.statusCode).json({
-    message: publicError.message,
-  });
+  res.status(publicError.statusCode).json(publicError);
 }
 
 const defaultOptions = {

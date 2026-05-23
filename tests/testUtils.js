@@ -1,6 +1,5 @@
-export default function checkNotAllowedResponse(respBody) {
-  expect(respBody.status).toBe(405);
-  expect(respBody).toEqual({
+export default function checkNotAllowedResponse(response) {
+  expect(response).toEqual({
     statusCode: 405,
     name: "MethodNotAllowedError",
     message: "Method not allowed.",
