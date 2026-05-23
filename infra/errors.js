@@ -18,11 +18,22 @@ class BaseError extends Error {
 }
 
 export class InternalServerError extends BaseError {
-  constructor({ cause }) {
+  constructor({ cause, statusCode }) {
     super("Unexpected error.", {
       cause,
       name: "InternalServerError",
-      statusCode: 500,
+      statusCode: statusCode || 500,
+      action: "Contact support.",
+    });
+  }
+}
+
+export class ServiceError extends BaseError {
+  constructor({ cause, message }) {
+    super(message || "Unavailable service.", {
+      cause,
+      name: "ServiceError",
+      statusCode: 503,
       action: "Contact support.",
     });
   }

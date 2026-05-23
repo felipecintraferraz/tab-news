@@ -1,9 +1,11 @@
 import { createRouter } from "next-connect";
 import database from "infra/database.js";
-import { InternalServerError, MethodNotAllowedError } from "infra/errors";
+import controller from "infra/controller.js";
 
 let dbName;
+
 const router = createRouter();
+export default router.handler(controller.errorHandlers);
 
 router.get(async (req, res) => {
   dbName = process.env.POSTGRES_DB;
@@ -27,21 +29,3 @@ router.get(async (req, res) => {
     },
   });
 });
-
-export default router.handler({
-  onNoMatch: onNoMatchHandler,
-  onError: onErrorHandler,
-});
-
-function onErrorHandler(error, req, res) {
-  const publicError = new InternalServerError({
-    cause: error,
-  });
-  console.error(publicError);
-  res.status(publicError.statusCode).json(publicError);
-}
-
-function onNoMatchHandler(req, res) {
-  const publicError = new MethodNotAllowedError();
-  res.status(publicError.statusCode).json(publicError);
-}
