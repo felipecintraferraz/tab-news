@@ -27,8 +27,7 @@ describe("API v1", () => {
 
       test("Run migrations when no pending migrations exist", async () => {
         expect(response.status).toBe(200);
-        expect(respBody.message).toBe("No migrations to apply");
-        // expect(respBody.length).toBe(0)
+        expect(respBody.message).toBe("No migrations to apply.");
       });
     });
   });
