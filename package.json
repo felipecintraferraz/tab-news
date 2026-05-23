@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "npm run services:wait:database && next dev -p 3005",
     "dev": "npm run services:up && npm run services:wait:database && npm run migrations:up && next dev -p 3005",
     "test": "npm run services:up && concurrently --names nxt,jest --hide nxt -k --success command-jest \"next dev -p 3005\" \"jest --config ./jest.config.js --runInBand --verbose\"",
     "test:watch": "jest --config ./jest.config.js --watchAll --runInBand",

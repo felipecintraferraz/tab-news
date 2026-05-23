@@ -1,4 +1,5 @@
 import orchestrator from "tests/orchestrator.js";
+import checkNotAllowedResponse from "tests/testUtils.js";
 
 const route = "/api/v1/status";
 const url = `${process.env.BASE_URL}${route}`;
@@ -22,7 +23,7 @@ describe("API v1", () => {
     describe("Anonymous user", () => {
       test("Is not allowed", async () => {
         expect(response.status).toBe(405);
-        expect(respBody.message).toBe("Method not allowed.");
+        checkNotAllowedResponse(respBody);
       });
     });
   });

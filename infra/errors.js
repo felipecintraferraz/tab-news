@@ -1,27 +1,39 @@
 class BaseError extends Error {
-  constructor(message, { cause, action, statusCode }) {
+  constructor(message, { cause, action, statusCode, name }) {
     super(message, {
       cause,
     });
     this.statusCode = statusCode;
     this.action = action;
+    this.name = name;
   }
   toJSON() {
     return {
+      statusCode: this.statusCode,
       name: this.name,
       message: this.message,
       action: this.action,
-      statusCode: this.statusCode,
     };
   }
 }
 
 export class InternalServerError extends BaseError {
-  constructor({ cause }) {
+  constructor({ cause, statusCode }) {
     super("Unexpected error.", {
       cause,
       name: "InternalServerError",
-      statusCode: 500,
+      statusCode: statusCode || 500,
+      action: "Contact support.",
+    });
+  }
+}
+
+export class ServiceError extends BaseError {
+  constructor({ cause, message }) {
+    super(message || "Unavailable service.", {
+      cause,
+      name: "ServiceError",
+      statusCode: 503,
       action: "Contact support.",
     });
   }
