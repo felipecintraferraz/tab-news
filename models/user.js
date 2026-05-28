@@ -1,11 +1,23 @@
 import database from "infra/database.js";
-import { ValidationError } from "infra/errors.js";
+import { ValidationError, NotFoundError } from "infra/errors.js";
 
 async function create(userInputValues) {
   await validateUniqueEmail(userInputValues.email);
   await validateUniqueUsername(userInputValues.username);
   const newUser = await runInsertQuery(userInputValues);
   return newUser;
+}
+
+async function findOneBy(username) {
+  const results = await database.query({
+    text: `SELECT id, username, email, created_at, updated_at FROM users WHERE LOWER(username) = LOWER($1) LIMIT 1;`,
+    values: [username],
+  });
+  if (results.rowCount > 0) return results.rows[0];
+  throw new NotFoundError({
+    message: "Username not found",
+    action: "Check the username.",
+  });
 }
 
 async function runInsertQuery(userInputValues) {
@@ -52,6 +64,7 @@ async function validateUniqueUsername(username) {
 
 const user = {
   create,
+  findOneBy,
 };
 
 export default user;
