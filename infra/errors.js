@@ -48,3 +48,13 @@ export class MethodNotAllowedError extends BaseError {
     });
   }
 }
+
+export class ValidationError extends BaseError {
+  constructor({ message, action }) {
+    super(message || "Validation error.", {
+      name: "ValidationError",
+      statusCode: 400,
+      action: action || "Check the input data.",
+    });
+  }
+}
