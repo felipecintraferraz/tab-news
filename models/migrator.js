@@ -4,7 +4,7 @@ import database from "infra/database";
 
 const defaultOptions = {
   dryRun: true,
-  dir: join("infra", "migrations"),
+  dir: join(process.cwd(), "infra", "migrations"),
   direction: "up",
   log: () => {},
   migrationsTable: "pgmigrations",
