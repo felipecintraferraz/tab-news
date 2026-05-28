@@ -1,6 +1,18 @@
-import { InternalServerError, MethodNotAllowedError } from "infra/errors.js";
+import {
+  InternalServerError,
+  MethodNotAllowedError,
+  NotFoundError,
+  ValidationError,
+} from "infra/errors.js";
 
 function onErrorHandler(error, req, res) {
+  if (
+    [ValidationError, NotFoundError].some(
+      (ErrorClass) => error instanceof ErrorClass,
+    )
+  ) {
+    return res.status(error.statusCode).json(error);
+  }
   const publicError = new InternalServerError({
     statusCode: error.statusCode,
     cause: error,
