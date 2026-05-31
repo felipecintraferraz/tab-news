@@ -8,11 +8,11 @@ export default router.handler(controller.errorHandlers);
 let migrations;
 
 router
-  .get(async (req, res) => {
+  .get(async (_, res) => {
     migrations = await migrator.listPendingMigrations();
     return res.status(200).json(migrations);
   })
-  .post(async (req, res) => {
+  .post(async (_, res) => {
     migrations = await migrator.runPendingMigrations();
     if (migrations.length > 0) {
       return res.status(201).json(migrations);
