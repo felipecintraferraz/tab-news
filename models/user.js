@@ -1,9 +1,11 @@
 import database from "infra/database.js";
+import passwordUtil from "infra/password.js";
 import { ValidationError, NotFoundError } from "infra/errors.js";
 
 async function create(userInputValues) {
   await validateUniqueEmail(userInputValues.email);
   await validateUniqueUsername(userInputValues.username);
+  await hashPasswordInObject(userInputValues);
   const newUser = await runInsertQuery(userInputValues);
   return newUser;
 }
@@ -17,6 +19,18 @@ async function findOneBy(username) {
   throw new NotFoundError({
     message: "Username not found",
     action: "Check the username.",
+  });
+}
+
+async function getPasswordHashById(id) {
+  const results = await database.query({
+    text: `SELECT password FROM users WHERE id = $1 LIMIT 1;`,
+    values: [id],
+  });
+  if (results.rowCount > 0) return results.rows[0].password;
+  throw new NotFoundError({
+    message: "User not found",
+    action: "Check the user ID.",
   });
 }
 
@@ -62,9 +76,16 @@ async function validateUniqueUsername(username) {
   return true;
 }
 
+async function hashPasswordInObject(userInputValues) {
+  const hashedPassword = await passwordUtil.hash(userInputValues.password);
+  userInputValues.password = hashedPassword;
+  return userInputValues;
+}
+
 const user = {
   create,
   findOneBy,
+  getPasswordHashById,
 };
 
 export default user;

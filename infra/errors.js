@@ -39,6 +39,16 @@ export class ServiceError extends BaseError {
   }
 }
 
+export class UnauthorizedError extends BaseError {
+  constructor({ message, action }) {
+    super(message || "Unauthorized.", {
+      name: "UnauthorizedError",
+      statusCode: 401,
+      action: action || "Check the credentials.",
+    });
+  }
+}
+
 export class MethodNotAllowedError extends BaseError {
   constructor() {
     super("Method not allowed.", {
