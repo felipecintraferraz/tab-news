@@ -2,6 +2,8 @@ import database from "infra/database.js";
 import passwordUtil from "infra/password.js";
 import { ValidationError, NotFoundError } from "infra/errors.js";
 
+const returnUserFields = "id, username, email, created_at, updated_at";
+
 async function create(userInputValues) {
   await validateUniqueEmail(userInputValues.email);
   await validateUniqueUsername(userInputValues.username);
@@ -17,8 +19,8 @@ async function findOneBy(username) {
   });
   if (results.rowCount > 0) return results.rows[0];
   throw new NotFoundError({
-    message: "Username not found",
-    action: "Check the username.",
+    message: "User not found",
+    action: "Check the provided property and value.",
   });
 }
 
@@ -38,7 +40,7 @@ async function runInsertQuery(userInputValues) {
   const result = await database.query({
     text: `INSERT INTO users (username, email, password)
            VALUES ($1, $2, $3)
-           RETURNING id, username, email, created_at, updated_at;`,
+           RETURNING ${returnUserFields};`,
     values: [
       userInputValues.username,
       userInputValues.email,
