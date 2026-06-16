@@ -6,7 +6,7 @@
     "start": "npm run services:wait:database && next dev -p 3005",
     "dev": "npm run services:up && npm run services:wait:database && npm run migrations:up && next dev -p 3005",
     "test": "npm run services:up && concurrently --names nxt,jest --hide nxt -k --success command-jest \"next dev -p 3005\" \"jest --config ./jest.config.js --runInBand --verbose\"",
-    "test:watch": "jest --config ./jest.config.js --watchAll --runInBand --verbose",
+    "test:watch": "jest --config ./jest.config.js --watchAll --runInBand",
     "services:up": "docker compose -f infra/compose.yaml up -d --force-recreate",
     "services:stop": "docker compose -f infra/compose.yaml stop",
     "services:down": "docker compose -f infra/compose.yaml down",
@@ -39,6 +39,7 @@
   "devDependencies": {
     "@commitlint/cli": "19.4.0",
     "@commitlint/config-conventional": "19.2.2",
+    "@faker-js/faker": "9.9.0",
     "commitizen": "4.3.1",
     "concurrently": "8.2.2",
     "cz-conventional-changelog": "3.3.0",
