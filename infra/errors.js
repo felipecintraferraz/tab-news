@@ -17,6 +17,46 @@ class BaseError extends Error {
   }
 }
 
+export class ValidationError extends BaseError {
+  constructor({ message, action }) {
+    super(message || "Validation error.", {
+      name: "ValidationError",
+      statusCode: 400,
+      action: action || "Check the input data.",
+    });
+  }
+}
+
+export class UnauthorizedError extends BaseError {
+  constructor({ message, action }) {
+    super(message || "Unauthorized.", {
+      name: "UnauthorizedError",
+      statusCode: 401,
+      action: action || "Check the credentials.",
+    });
+  }
+}
+
+export class NotFoundError extends BaseError {
+  constructor({ message, action }) {
+    super(message || "Resource not found", {
+      name: "ResourceNotFoundError",
+      statusCode: 404,
+      action: action || "Check provided parameters.",
+    });
+  }
+}
+
+export class MethodNotAllowedError extends BaseError {
+  constructor() {
+    super("Method not allowed.", {
+      name: "MethodNotAllowedError",
+      statusCode: 405,
+      action: "Use an allowed method.",
+    });
+  }
+}
+
 export class InternalServerError extends BaseError {
   constructor({ cause, statusCode }) {
     super("Unexpected error.", {
@@ -35,46 +75,6 @@ export class ServiceError extends BaseError {
       name: "ServiceError",
       statusCode: 503,
       action: "Contact support.",
-    });
-  }
-}
-
-export class UnauthorizedError extends BaseError {
-  constructor({ message, action }) {
-    super(message || "Unauthorized.", {
-      name: "UnauthorizedError",
-      statusCode: 401,
-      action: action || "Check the credentials.",
-    });
-  }
-}
-
-export class MethodNotAllowedError extends BaseError {
-  constructor() {
-    super("Method not allowed.", {
-      name: "MethodNotAllowedError",
-      statusCode: 405,
-      action: "Use an allowed method.",
-    });
-  }
-}
-
-export class ValidationError extends BaseError {
-  constructor({ message, action }) {
-    super(message || "Validation error.", {
-      name: "ValidationError",
-      statusCode: 400,
-      action: action || "Check the input data.",
-    });
-  }
-}
-
-export class NotFoundError extends BaseError {
-  constructor({ message, action }) {
-    super(message || "Resource not found", {
-      name: "ResourceNotFoundError",
-      statusCode: 404,
-      action: action || "Check provided parameters.",
     });
   }
 }
