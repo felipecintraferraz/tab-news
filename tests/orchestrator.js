@@ -31,15 +31,20 @@ async function runPendingMigrations() {
 async function createUser({ username, email, password }) {
   const testUsername = username || faker.internet.username();
   const testEmail = email || faker.internet.email();
-  const testPassword = password || faker.string.alphanumeric(10);
+  const testPassword = password || faker.internet.password();
 
-  const testUser = await user.create({
+  await user.create({
     username: testUsername,
     email: testEmail,
     password: testPassword,
   });
+  const userToReturn = {
+    username: testUsername,
+    email: testEmail,
+    password: testPassword,
+  };
 
-  return testUser;
+  return userToReturn;
 }
 
 const orchestrator = {

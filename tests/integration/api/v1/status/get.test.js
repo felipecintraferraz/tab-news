@@ -2,6 +2,8 @@ import orchestrator from "tests/orchestrator.js";
 
 const route = "/api/v1/status";
 const url = `${process.env.BASE_URL}${route}`;
+const ISO8601_UTC_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+
 let response;
 let respBody;
 
@@ -25,8 +27,6 @@ describe("API v1", () => {
       });
 
       test("Validate the update_at timestamp format", async () => {
-        const ISO8601_UTC_REGEX =
-          /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
         expect(respBody.updated_at).toMatch(ISO8601_UTC_REGEX);
       });
 

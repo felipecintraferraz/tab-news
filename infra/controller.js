@@ -3,11 +3,12 @@ import {
   MethodNotAllowedError,
   NotFoundError,
   ValidationError,
+  UnauthorizedError,
 } from "infra/errors.js";
 
 function onErrorHandler(error, req, res) {
   if (
-    [ValidationError, NotFoundError].some(
+    [ValidationError, NotFoundError, UnauthorizedError].some(
       (ErrorClass) => error instanceof ErrorClass,
     )
   ) {
