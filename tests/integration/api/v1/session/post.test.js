@@ -1,7 +1,7 @@
 import orchestrator from "tests/orchestrator.js";
 import { version as uuidVersion } from "uuid";
 import session from "models/session.js";
-
+import setCookieParser from "set-cookie-parser";
 const route = "/api/v1/session";
 const url = `${process.env.BASE_URL}${route}`;
 const ISO8601_UTC_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
@@ -121,6 +121,18 @@ describe("API v1", () => {
         expiresAt.setMilliseconds(0);
         createdAt.setMilliseconds(0);
         expect(expiresAt - createdAt).toEqual(session.SESSION_EXPIRATION_TIME);
+
+        const parsedCookies = setCookieParser(response, {
+          map: true,
+        });
+
+        expect(parsedCookies.session_id).toEqual({
+          name: "session_id",
+          value: respBody.token,
+          httpOnly: true,
+          path: "/",
+          maxAge: session.SESSION_EXPIRATION_TIME / 1000,
+        });
       });
     });
   });
