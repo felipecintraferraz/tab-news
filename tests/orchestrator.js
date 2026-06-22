@@ -33,15 +33,18 @@ async function createUser({ username, email, password }) {
   const testEmail = email || faker.internet.email();
   const testPassword = password || faker.internet.password();
 
-  await user.create({
+  const userCreated = await user.create({
     username: testUsername,
     email: testEmail,
     password: testPassword,
   });
   const userToReturn = {
-    username: testUsername,
-    email: testEmail,
+    id: userCreated.id,
+    username: userCreated.username,
     password: testPassword,
+    email: userCreated.email,
+    created_at: userCreated.created_at,
+    updated_at: userCreated.updated_at,
   };
 
   return userToReturn;
