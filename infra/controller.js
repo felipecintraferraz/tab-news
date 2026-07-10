@@ -37,6 +37,10 @@ async function setSessionCookie(sessionToken, res) {
     httpOnly: true,
   });
   res.setHeader("Set-Cookie", setCookie);
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, max-age=0, must-revalidate",
+  );
 }
 
 const controller = {

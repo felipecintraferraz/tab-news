@@ -13,5 +13,6 @@ router.get(async (req, res) => {
   const authenticatedUser = await user.findOneBy("id", sessionObject.user_id);
   await session.renew(sessionObject.id);
   await controller.setSessionCookie(sessionObject.token, res);
+
   return res.status(200).json(authenticatedUser);
 });

@@ -2,7 +2,6 @@ import controller from "infra/controller.js";
 import { createRouter } from "next-connect";
 import authentication from "infra/authentication.js";
 import session from "models/session.js";
-import * as cookie from "cookie";
 
 const router = createRouter();
 export default router.handler(controller.errorHandlers);
