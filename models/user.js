@@ -40,7 +40,9 @@ async function update(username, userInputValues) {
 }
 
 async function findOneBy(property, value) {
-  const allowedProperties = ["username", "email"];
+  property = property.toLowerCase();
+  value = value.toLowerCase();
+  const allowedProperties = ["username", "email", "id"];
   if (!allowedProperties.includes(property)) {
     throw new ValidationError({
       message: "Invalid property",
@@ -48,10 +50,15 @@ async function findOneBy(property, value) {
     });
   }
   const results = await database.query({
-    text: `SELECT id, username, email, password, created_at, updated_at FROM users WHERE LOWER(${property}) = LOWER($1) LIMIT 1;`,
+    text: `SELECT id, username, email, password AS hashed_password, created_at, updated_at FROM users WHERE ${property} = $1 LIMIT 1;`,
     values: [value],
   });
-  if (results.rowCount > 0) return results.rows[0];
+  if (results.rowCount > 0) {
+    // eslint-disable-next-line no-unused-vars
+    const { hashed_password, ...userWithoutPassword } = results.rows[0];
+    return userWithoutPassword;
+  }
+
   throw new NotFoundError({
     message: "User not found",
     action: "Check the provided property and value.",
