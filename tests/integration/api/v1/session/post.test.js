@@ -120,7 +120,9 @@ describe("API v1", () => {
 
         expiresAt.setMilliseconds(0);
         createdAt.setMilliseconds(0);
-        expect(expiresAt - createdAt).toEqual(session.SESSION_EXPIRATION_TIME);
+        expect(expiresAt - createdAt).toEqual(
+          session.SESSION_EXPIRATION_TIME_MS,
+        );
 
         const parsedCookies = setCookieParser(response, {
           map: true,
@@ -131,7 +133,7 @@ describe("API v1", () => {
           value: respBody.token,
           httpOnly: true,
           path: "/",
-          maxAge: session.SESSION_EXPIRATION_TIME / 1000,
+          maxAge: session.SESSION_EXPIRATION_TIME_MS / 1000,
         });
       });
     });

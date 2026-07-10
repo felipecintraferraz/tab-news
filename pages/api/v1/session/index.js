@@ -17,14 +17,7 @@ router.post(async (req, res) => {
   );
 
   const newSession = await session.create(authenticatedUser.id);
-
-  const setCookie = cookie.serialize("session_id", newSession.token, {
-    path: "/",
-    maxAge: session.SESSION_EXPIRATION_TIME / 1000,
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-  });
-  res.setHeader("Set-Cookie", setCookie);
+  await controller.setSessionCookie(newSession.token, res);
 
   return res.status(201).json(newSession);
 });

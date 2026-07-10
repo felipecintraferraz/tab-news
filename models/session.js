@@ -1,10 +1,10 @@
 import crypto from "crypto";
 import database from "infra/database.js";
 
-const SESSION_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 30; // 30 days
+const SESSION_EXPIRATION_TIME_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
 async function create(userId) {
   const token = crypto.randomBytes(48).toString("hex");
-  const expiresAt = new Date(Date.now() + SESSION_EXPIRATION_TIME);
+  const expiresAt = new Date(Date.now() + SESSION_EXPIRATION_TIME_MS);
 
   const newSession = runInsertQuery(token, userId, expiresAt);
 
@@ -26,7 +26,7 @@ async function runInsertQuery(token, userId, expiresAt) {
 
 const session = {
   create,
-  SESSION_EXPIRATION_TIME,
+  SESSION_EXPIRATION_TIME_MS,
 };
 
 export default session;
