@@ -39,9 +39,7 @@ async function update(username, userInputValues) {
   return updatedUser;
 }
 
-async function findOneBy(property, value) {
-  property = property.toLowerCase();
-  value = value.toLowerCase();
+async function findOneBy(property, value, getPassword = false) {
   const allowedProperties = ["username", "email", "id"];
   if (!allowedProperties.includes(property)) {
     throw new ValidationError({
@@ -50,10 +48,13 @@ async function findOneBy(property, value) {
     });
   }
   const results = await database.query({
-    text: `SELECT id, username, email, password AS hashed_password, created_at, updated_at FROM users WHERE ${property} = $1 LIMIT 1;`,
+    text: `SELECT id, username, email, password AS hashed_password, created_at, updated_at FROM users WHERE LOWER(${property}::text) = LOWER($1::text) LIMIT 1;`,
     values: [value],
   });
   if (results.rowCount > 0) {
+    if (getPassword) {
+      return results.rows[0];
+    }
     // eslint-disable-next-line no-unused-vars
     const { hashed_password, ...userWithoutPassword } = results.rows[0];
     return userWithoutPassword;

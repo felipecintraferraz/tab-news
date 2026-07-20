@@ -20,3 +20,11 @@ router.post(async (req, res) => {
 
   return res.status(201).json(newSession);
 });
+
+router.delete(async (req, res) => {
+  const sessionToken = req.cookies.session_id;
+  const sessionObject = await session.findValidSessionByToken(sessionToken);
+  const expiredSession = await session.expire(sessionObject.id);
+  controller.clearSessionCookie(res);
+  return res.status(200).json(expiredSession);
+});

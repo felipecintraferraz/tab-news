@@ -91,8 +91,19 @@ describe("API v1", () => {
           name: "UnauthorizedError",
           statusCode: 401,
         });
-      });
 
+        const parsedSetCookie = setCookieParser(resp, {
+          map: true,
+        });
+
+        expect(parsedSetCookie.session_id).toEqual({
+          name: "session_id",
+          value: "invalid",
+          maxAge: -1,
+          path: "/",
+          httpOnly: true,
+        });
+      });
       test("With expired session", async () => {
         jest.useFakeTimers({
           now: new Date(Date.now() - session.SESSION_EXPIRATION_TIME_MS),
@@ -115,6 +126,17 @@ describe("API v1", () => {
           action: "Provide a valid session token.",
           name: "UnauthorizedError",
           statusCode: 401,
+        });
+        const parsedSetCookie = setCookieParser(resp, {
+          map: true,
+        });
+
+        expect(parsedSetCookie.session_id).toEqual({
+          name: "session_id",
+          value: "invalid",
+          maxAge: -1,
+          path: "/",
+          httpOnly: true,
         });
       });
     });

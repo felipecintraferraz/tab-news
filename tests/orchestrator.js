@@ -29,6 +29,12 @@ async function runPendingMigrations() {
   await migrator.runPendingMigrations();
 }
 
+async function deleteAllEmails() {
+  await fetch(`http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}/messages`, {
+    method: "DELETE"
+  })
+}
+
 async function createUser({ username, email, password }) {
   const testUsername = username || faker.internet.username();
   const testEmail = email || faker.internet.email();
@@ -61,6 +67,7 @@ const orchestrator = {
   runPendingMigrations,
   createUser,
   createSession,
+  deleteAllEmails
 };
 
 export default orchestrator;

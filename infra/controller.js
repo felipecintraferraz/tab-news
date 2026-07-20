@@ -9,6 +9,9 @@ import * as cookie from "cookie";
 import session from "models/session.js";
 
 function onErrorHandler(error, req, res) {
+  if (error instanceof UnauthorizedError) {
+    clearSessionCookie(res);
+  }
   if (
     [ValidationError, NotFoundError, UnauthorizedError].some(
       (ErrorClass) => error instanceof ErrorClass,
@@ -43,12 +46,23 @@ async function setSessionCookie(sessionToken, res) {
   );
 }
 
+async function clearSessionCookie(res) {
+  const setCookie = cookie.serialize("session_id", "invalid", {
+    path: "/",
+    maxAge: -1,
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+  });
+  res.setHeader("Set-Cookie", setCookie);
+}
+
 const controller = {
   errorHandlers: {
     onNoMatch: onNoMatchHandler,
     onError: onErrorHandler,
   },
   setSessionCookie,
+  clearSessionCookie,
 };
 
 export default controller;

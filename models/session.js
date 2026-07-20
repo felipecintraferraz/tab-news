@@ -48,10 +48,19 @@ async function renew(sessionId) {
   return updatedSession.rows[0];
 }
 
+async function expire(sessionId) {
+  const expiredSession = await database.query({
+    text: `UPDATE sessions SET expires_at = expires_at - interval '1 year', updated_at = NOW() WHERE id = $1 RETURNING *;`,
+    values: [sessionId],
+  });
+  return expiredSession.rows[0];
+}
+
 const session = {
   create,
   findValidSessionByToken,
   renew,
+  expire,
   SESSION_EXPIRATION_TIME_MS,
 };
 

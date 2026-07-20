@@ -18,10 +18,10 @@ async function getAuthenticatedUser(email, password) {
   let storedUser;
   let isPasswordValid;
   try {
-    storedUser = await user.findOneBy("email", email);
+    storedUser = await user.findOneBy("email", email, true);
     isPasswordValid = await passwordUtil.compare(
       password,
-      storedUser?.password,
+      storedUser?.hashed_password,
     );
   } catch (error) {
     if (error instanceof NotFoundError) {
