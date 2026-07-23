@@ -5,19 +5,29 @@ import migrator from "models/migrator.js";
 import user from "models/user.js";
 import { faker } from "@faker-js/faker";
 
+const emailHttpUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`;
+
 async function waitForAllServices() {
   await waitForWebServer();
+  await waitForEmailServer();
 
-  async function waitForWebServer() {
-    return retry(fetchStatusPage, {
+  async function waitForEmailServer() {
+    return retry(fetchPage(`${emailHttpUrl}`), {
       retries: 100,
       maxTimeout: 1000,
     });
+  }
 
-    async function fetchStatusPage() {
-      const response = await fetch(`${process.env.BASE_URL}/api/v1/status`);
-      await response.json();
-    }
+  async function waitForWebServer() {
+    return retry(fetchPage(`${process.env.BASE_URL}/api/v1/status`), {
+      retries: 100,
+      maxTimeout: 1000,
+    });
+  }
+
+  async function fetchPage(url) {
+    const response = await fetch(url);
+    await response.json();
   }
 }
 
@@ -30,9 +40,20 @@ async function runPendingMigrations() {
 }
 
 async function deleteAllEmails() {
-  await fetch(`http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}/messages`, {
-    method: "DELETE"
-  })
+  await fetch(`${emailHttpUrl}/messages`, {
+    method: "DELETE",
+  });
+}
+
+async function getLastEmail() {
+  const emailListResponse = await fetch(`${emailHttpUrl}/messages`);
+  const emailListBody = await emailListResponse.json();
+  const emailItem = emailListBody.at(-1);
+  const emailTextResponse = await fetch(
+    `${emailHttpUrl}/messages/${emailItem.id}.plain`,
+  );
+  emailItem.text = await emailTextResponse.text();
+  return emailListBody.at(-1);
 }
 
 async function createUser({ username, email, password }) {
@@ -67,7 +88,8 @@ const orchestrator = {
   runPendingMigrations,
   createUser,
   createSession,
-  deleteAllEmails
+  deleteAllEmails,
+  getLastEmail,
 };
 
 export default orchestrator;
